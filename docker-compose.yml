@@ -1,3 +1,5 @@
+name: yannsadowskidev
+
 services:
   nginx:
     image: nginx:alpine
