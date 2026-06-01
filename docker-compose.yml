@@ -1,0 +1,49 @@
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - html-output:/usr/share/nginx/html:ro
+    networks:
+      - blog
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - blog
+
+  webhook-listener:
+    build:
+      context: ./webhook-listener
+    restart: unless-stopped
+    environment:
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+      - REPO_URL=${REPO_URL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - html-output:/html-output
+      - .:/project
+    networks:
+      - blog
+
+  hugo-builder:
+    build:
+      context: ./hugo-builder
+      args:
+        REPO_URL: ${REPO_URL}
+    environment:
+      - REPO_URL=${REPO_URL}
+    volumes:
+      - html-output:/html-output
+    profiles:
+      - build
+
+volumes:
+  html-output:
+
+networks:
+  blog:

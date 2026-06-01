@@ -1,0 +1,83 @@
+{{- $errorMissingValue := "cite shortcode requires at least 1 param (citation key). Example: {{< cite \"key\" >}}" -}}
+
+{{- $key := "" -}}
+{{- $pages := slice -}}
+{{- $suppressAuthor := false -}}
+{{- $keySeparator := ";" -}}
+
+{{- if .IsNamedParams -}}
+  {{- if not (.Get "key") -}}{{- errorf $errorMissingValue -}}{{- end -}}
+  {{- $key = .Get "key" -}}
+  {{- $pages = split (.Get "pages" | string) ";" -}}
+  {{- if .Get "suppressAuthor" }}{{- $suppressAuthor = true -}}{{- end -}}
+{{- else -}}
+  {{- if lt (len .Params) 1 -}}{{- errorf $errorMissingValue -}}{{- end -}}
+  {{- $key = (.Get 0) | replaceRE "^-(.+)" "$1" -}}
+  {{- $pages = split (string (.Get 1)) ";" -}}
+  {{- if findRE "^-(.+)" (.Get 0) 1 -}}{{- $suppressAuthor = true -}}{{- end -}}
+{{- end -}}
+
+{{- $keys := split $key $keySeparator -}}
+{{- $totalRefs := len $keys -}}
+
+{{/* Citation style */}}
+{{- $citationStyle := "apa" -}}
+{{- if $.Site.Params.citationStyle -}}
+  {{- if templates.Exists (printf "partials/bibliography/%s-style.html" $.Site.Params.citationStyle) -}}
+    {{- $citationStyle = $.Site.Params.citationStyle -}}
+  {{- end -}}
+{{- end -}}
+{{- $partialPath := printf "bibliography/%s-style.html" $citationStyle -}}
+
+{{/* Load bibliography from page resource */}}
+{{- $bibliography := slice -}}
+{{- $pageResource := $.Page.Resources.GetMatch "*bib*.json" -}}
+{{- if $pageResource -}}
+  {{- $bibliography = $pageResource | transform.Unmarshal -}}
+{{- end -}}
+
+{{- if gt (len $bibliography) 0 -}}
+<span class="hugo-cite-intext" itemprop="citation">(
+  {{- range $keyIndex, $k := $keys -}}
+    {{- range where $bibliography "id" "eq" $k -}}
+      {{- $currentRef := . -}}
+      <span class="hugo-cite-group">
+        {{- $.Page.Store.SetInMap "citedBib" $k $currentRef -}}
+        <a href="#{{- $k | urlize -}}"><span class="visually-hidden">Citation: </span>
+          {{- if not $suppressAuthor -}}
+            {{- $displayAuthors := $currentRef.author -}}
+            {{- if not $currentRef.author -}}{{- $displayAuthors = $currentRef.editor -}}{{- end -}}
+            {{- if not $displayAuthors -}}
+              <span rel="noauthor">{{- i18n "apa_no_author_abbr" | default "n.a." | upper -}}</span>
+            {{- else -}}
+              {{- range $authorIndex, $author := $displayAuthors | first 2 -}}
+                <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                  {{- with $author.given -}}<meta itemprop="givenName" content="{{ . }}">{{- end -}}
+                  {{- with $author.family -}}<span itemprop="familyName">{{ . | markdownify }}</span>{{- end -}}
+                </span>
+                {{- if and (eq $authorIndex 0) (gt (len $displayAuthors) 2) -}},&#32;{{- end -}}
+                {{- if and (eq (len $displayAuthors) 2) (eq $authorIndex 0) -}}&#32;&amp;&#32;{{- end -}}
+              {{- end -}}
+              {{- if gt (len $displayAuthors) 2 -}}<em>&amp; al.</em>{{- end -}}
+            {{- end -}},&#32;
+          {{- end -}}
+          {{- if and (isset $currentRef "issued") (isset $currentRef.issued "date-parts") -}}
+            {{- range index $currentRef.issued "date-parts" -}}
+              {{- range first 1 . -}}<span itemprop="datePublished">{{- . -}}</span>{{- end -}}
+            {{- end -}}
+          {{- end -}}
+          {{- $currentPages := index $pages $keyIndex -}}
+          {{- with $currentPages -}},&#32;
+            {{- if gt (len (findRE "-" $currentPages)) 0 -}}pp.&nbsp;{{- else -}}p.&nbsp;{{- end -}}
+            {{- $currentPages -}}
+          {{- end -}}
+        </a>
+        <span class="hugo-cite-citation"> {{ partial $partialPath $currentRef }}</span>
+      </span>
+      {{- if lt (add 1 $keyIndex) $totalRefs -}};&#32;{{- end -}}
+    {{- else -}}
+      <span style="background-color:#f00;color:#fff;">No matching key: {{- $k -}}</span>
+    {{- end -}}
+  {{- end -}}
+)</span>
+{{- end -}}

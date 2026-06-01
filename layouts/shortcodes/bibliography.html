@@ -1,0 +1,21 @@
+{{- $citedOnly := false -}}
+{{- $references := false -}}
+
+{{- if .IsNamedParams -}}
+  {{- if .Get "cited" }}{{ $citedOnly = true }}{{ end -}}
+{{- else -}}
+  {{- if eq (.Get 0) "cited" }}{{ $citedOnly = true }}{{ end -}}
+  {{- if eq (.Get 1) "cited" }}{{ $citedOnly = true }}{{ end -}}
+{{- end -}}
+
+{{- if $citedOnly -}}
+  {{- $references = $.Page.Store.Get "citedBib" -}}
+{{- else -}}
+  {{- $pageResource := $.Page.Resources.GetMatch "*bib*.json" -}}
+  {{- if $pageResource -}}
+    {{- $references = $pageResource | transform.Unmarshal -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $bibParams := dict "references" $references -}}
+{{- partial "bibliography/bibliography-list.html" $bibParams -}}

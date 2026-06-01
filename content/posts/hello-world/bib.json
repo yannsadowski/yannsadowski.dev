@@ -1,0 +1,13 @@
+[
+  {
+    "id": "owasp2021",
+    "type": "webpage",
+    "title": "OWASP Top Ten 2021",
+    "author": [
+      { "family": "OWASP Foundation" }
+    ],
+    "issued": { "date-parts": [[2021]] },
+    "URL": "https://owasp.org/www-project-top-ten/",
+    "accessed": { "date-parts": [[2026, 6, 1]] }
+  }
+]

@@ -1,0 +1,74 @@
+title = "yannsadowski.dev"
+baseURL = "https://yannsadowski.dev/"
+languageCode = "en-gb"
+defaultContentLanguage = "en-gb"
+enableEmoji = true
+theme = ["hugo-blog-awesome", "hugo-cite"]
+
+[services]
+  [services.googleAnalytics]
+    id = ""
+  [services.disqus]
+    shortname = ""
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+
+[menu]
+[[menu.main]]
+  pageRef = "/"
+  name = "Home"
+  url = "/"
+  weight = 10
+[[menu.main]]
+  pageRef = "posts"
+  name = "Posts"
+  url = "/posts/"
+  weight = 20
+[[menu.main]]
+  pageRef = "about"
+  name = "About"
+  url = "/about/"
+  weight = 30
+
+[params]
+  sitename = "yannsadowski.dev"
+  defaultColor = "auto"
+  description = "Personal blog about software, systems, and ideas."
+  mainSections = ["posts"]
+  toc = true
+  tocOpen = false
+  goToTop = true
+  dateFormat = "2 Jan 2006"
+  rssFeedDescription = "summary"
+
+[params.author]
+  name = "Yann Sadowski"
+  intro = "yannsadowski.dev"
+  description = "Personal blog about software, systems, and ideas."
+
+[params.webmanifest]
+  name = "yannsadowski.dev"
+  short_name = "ysadowski"
+  start_url = "/"
+  theme_color = "#434648"
+  background_color = "#fff"
+  display = "standalone"
+
+[params.browserconfig]
+  TileColor = "#434648"
+
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/ysadowski"
+
+[[params.socialIcons]]
+  name = "Rss"
+  url = "/index.xml"
