@@ -5,6 +5,6 @@ draft: false
 description: "About Yann Sadowski"
 ---
 
-Software engineer. I write about systems, self-hosting, and whatever I am currently building.
+Phd Student in AI/ML at I3S SPARK Sophia Antipolis. I write about myself, my vision/philosophy and AI/ML.
 
-This site is generated with [Hugo](https://gohugo.io) and hosted on a Raspberry Pi 5.
+This site is generated with [Hugo](https://gohugo.io).

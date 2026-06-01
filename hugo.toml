@@ -41,7 +41,7 @@ theme = ["hugo-blog-awesome", "hugo-cite"]
 [params]
   sitename = "yannsadowski.dev"
   defaultColor = "auto"
-  description = "Personal blog about software, systems, and ideas."
+  description = "Personal blog about AI, myself, and ideas."
   mainSections = ["posts"]
   toc = true
   tocOpen = false
@@ -52,7 +52,7 @@ theme = ["hugo-blog-awesome", "hugo-cite"]
 [params.author]
   name = "Yann Sadowski"
   intro = "yannsadowski.dev"
-  description = "Personal blog about software, systems, and ideas."
+  description = "Personal blog about AI, myself, and ideas."
 
 [params.webmanifest]
   name = "yannsadowski.dev"
@@ -67,7 +67,7 @@ theme = ["hugo-blog-awesome", "hugo-cite"]
 
 [[params.socialIcons]]
   name = "github"
-  url = "https://github.com/ysadowski"
+  url = "https://github.com/yannsadowski"
 
 [[params.socialIcons]]
   name = "Rss"
